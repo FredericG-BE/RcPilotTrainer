@@ -1,0 +1,117 @@
+# Alias Wavefront MTL File Exported from SketchUp
+# with OBJexporter (c) 2013 TIG
+# Made for 'Cessna.obj'
+
+newmtl Default_Material
+Ka 1 1 1
+Kd 1 1 1
+Ks 0.333 0.333 0.333
+Ns 0
+d 1
+Tr 1
+
+newmtl Gray_Glass
+Ka 0.501961 0.501961 0.501961
+Kd 0.501961 0.501961 0.501961
+Ks 0.333 0.333 0.333
+Ns 0
+d 0.5
+Tr 0.5
+
+newmtl Charcoal
+Ka 0.137255 0.137255 0.137255
+Kd 0.137255 0.137255 0.137255
+Ks 0.333 0.333 0.333
+Ns 0
+d 1
+Tr 1
+
+newmtl Silver
+Ka 0.752941 0.752941 0.752941
+Kd 0.752941 0.752941 0.752941
+Ks 0.333 0.333 0.333
+Ns 0
+d 1
+Tr 1
+
+newmtl White
+Ka 1 1 1
+Kd 1 1 1
+Ks 0.333 0.333 0.333
+Ns 0
+d 1
+Tr 1
+
+newmtl Gray
+Ka 0.501961 0.501961 0.501961
+Kd 0.501961 0.501961 0.501961
+Ks 0.333 0.333 0.333
+Ns 0
+d 1
+Tr 1
+
+newmtl Red_Glass
+Ka 1 0 0
+Kd 1 0 0
+Ks 0.333 0.333 0.333
+Ns 0
+d 0.5
+Tr 0.5
+
+newmtl DarkSlateGray
+Ka 0.184314 0.309804 0.309804
+Kd 0.184314 0.309804 0.309804
+Ks 0.333 0.333 0.333
+Ns 0
+d 1
+Tr 1
+
+newmtl Color_002
+Ka 0.776471 0.776471 0.776471
+Kd 0.776471 0.776471 0.776471
+Ks 0.333 0.333 0.333
+Ns 0
+d 1
+Tr 1
+
+newmtl Color_003
+Ka 0.666667 0.666667 0.666667
+Kd 0.666667 0.666667 0.666667
+Ks 0.333 0.333 0.333
+Ns 0
+d 1
+Tr 1
+
+newmtl Color_A01
+Ka 1 0 0
+Kd 1 0 0
+Ks 0.333 0.333 0.333
+Ns 0
+d 1
+Tr 1
+
+newmtl Color_001
+Ka 0.886275 0.886275 0.886275
+Kd 0.886275 0.886275 0.886275
+Ks 0.333 0.333 0.333
+Ns 0
+d 1
+Tr 1
+
+newmtl DarkGray
+Ka 0.317647 0.317647 0.317647
+Kd 0.317647 0.317647 0.317647
+Ks 0.333 0.333 0.333
+Ns 0
+d 1
+Tr 1
+
+newmtl Material2
+Ka 0.517647 0.517647 0.517647
+Kd 0.517647 0.517647 0.517647
+Ks 0.333 0.333 0.333
+Ns 0
+d 1
+Tr 1
+
+#EOF
