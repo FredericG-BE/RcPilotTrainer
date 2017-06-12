@@ -10,12 +10,18 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import time
 import random
+import copy
 from operator import attrgetter
+import config
 # import numpy as np
 # import quaternion
 
 # IMPORT OBJECT LOADER
 from objloader import *
+
+
+config = config.Config()
+config.showDialog()
 
 pygame.init()
 viewport = (1000,800)
@@ -208,8 +214,8 @@ def genRotationRudder():
 class Test(object):
     
     def __init__(self, startPos, rotation):
-        self.startPos = startPos
-        self.rotation = rotation
+        self.startPos = copy.copy(startPos)
+        self.rotation = copy.copy(rotation)
         self.nbSuccess = 0
         self.nbFail = 0
         
@@ -224,7 +230,8 @@ class Test(object):
             return 0
         
     def getConfidence(self):
-        return self.getSuccessRate() * self.nbSuccess/4.0
+        return self.getSuccessRate() * (self.nbSuccess+5)
+        
         
     def __str__(self):
         return "Pos %15s Rot %10s nbSuccess:%2d nbFail:%2d successRate:%3d%% conf:%2.2f" % (str(self.startPos), str(self.rotation), self.nbSuccess, self.nbFail, self.getSuccessRate()*100, self.getConfidence())
@@ -236,11 +243,50 @@ rotationOptions = (genRotationAilerons, genRotationElev, genRotationRudder)
 
 print "Preparing Tests"
 tests = []
-for i in range(25):
-    startPos = startPosOptions[random.randrange(len(startPosOptions))]()
-    rotation = rotationOptions[random.randrange(len(rotationOptions))]() 
-    tests.append(Test(startPos, rotation))
+# for i in range(25):
+#     startPos = startPosOptions[random.randrange(len(startPosOptions))]()
+#     rotation = rotationOptions[random.randrange(len(rotationOptions))]() 
+#     tests.append(Test(startPos, rotation))
+
+def genTests(startPos, startPosAngleAxis, startPosAngleSteps, rotAxises):
+    res = []
+    for rotAxis in rotAxises:
+        for angle in startPosAngleSteps:
+            start = [x for x in startPos]
+            start[startPosAngleAxis] += angle 
+            rot = [0,0,0]
+            rot[rotAxis] = 1
+            res.append(Test(start, rot))
+            rot[rotAxis] = -1
+            res.append(Test(start, rot))
+    return res
+
+AXIS_ELEV = 0
+AXIS_AIL = 1
+AXIS_YAW = 2
+
+POS_FLYAWAY = (0,0,0)
+POS_FLYAWAY_INV = (0,180,0)
+POS_STRAIGHTUP = (90,0,0)
+POS_STRAIGHTDOWN = (-90,0,0)
+POS_KNIFEEDGE_L = (90,0,90)
+POS_KNIFEEDGE_R = (90,0,-90)
+
+rotAxises =[]
+if config.Aileron:      rotAxises.append(AXIS_AIL)
+if config.Elevator:     rotAxises.append(AXIS_ELEV)
+if config.Yaw:          rotAxises.append(AXIS_YAW)
+
+if config.Flat:         tests += genTests(POS_FLYAWAY,      AXIS_YAW,   range(0,360,45),    rotAxises)
+if config.Inverted:     tests += genTests(POS_FLYAWAY_INV,  AXIS_YAW,   range(0,360,45),    rotAxises)
+if config.StraightUp:   tests += genTests(POS_STRAIGHTUP,   AXIS_AIL,   range(0,360,45),    rotAxises)
+if config.StraightDown: tests += genTests(POS_STRAIGHTDOWN, AXIS_AIL,   range(0,360,45),    rotAxises)
+if config.KnifeEdge:    
+                        tests += genTests(POS_KNIFEEDGE_L,    AXIS_YAW,   range(0,360,180),   rotAxises)
+                        tests += genTests(POS_KNIFEEDGE_R,    AXIS_YAW,   range(0,360,180),   rotAxises)
     
+random.shuffle(tests)
+                 
 while True:
     
     tests.sort(key=Test.getConfidence)
