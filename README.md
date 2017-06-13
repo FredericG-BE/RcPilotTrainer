@@ -3,6 +3,8 @@ RcPilotTrainer is a trainer for Remote Control Airplane Pilots.
 
 In contradiction to a traditional simulator, this tool focusses on one particular challenge or remote-controlled plying: knowing what input to give to achieve the intended rotation. This is a simple task when the plane is flying away from you, but some inputs get inverted when the plane flies towards you or flies inverted or a combination of both.
 
+I created this tool because I hope I will progress faster on this particular aspect than with a regular simulator. 
+
 ![Screenshot](https://github.com/FredericG-BE/RcPilotTrainer/blob/master/Images/Screenshot.jpg)
 
 The tool shows a plane in a random position for a second and then starts rotating around one of the planes axis. You are invited to make an input with your remote control to counteract this rotation. At startup, you can choose from what possible start positions the tool can start from (flat, inverted, ...) and on what axes you want to train (aileron, elevator or yaw). As the training progresses, the tool learns what conditions you are struggling with.
