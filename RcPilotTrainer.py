@@ -1,8 +1,3 @@
-# Basic OBJ file viewer. needs objloader from:
-#  http://www.pygame.org/wiki/OBJFileLoader
-# LMB + move: rotate
-# RMB + move: pan
-# Scroll wheel: zoom in/out
 import sys, pygame
 from pygame.locals import *
 from pygame.constants import *
@@ -12,58 +7,30 @@ import time
 import random
 import copy
 from operator import attrgetter
-import config
-# import numpy as np
-# import quaternion
 
-# IMPORT OBJECT LOADER
+import config
 from objloader import *
 
 
-config = config.Config()
-config.showDialog()
+VERSION = "0.1"
 
-pygame.init()
-viewport = (1000,800)
-hx = viewport[0]/2
-hy = viewport[1]/2
-srf = pygame.display.set_mode(viewport, OPENGL | DOUBLEBUF)
+TESTRES_OK = 1
+TESTREF_HESITATED = 2
+TESTRES_FAIL = 2       
 
-pygame.joystick.init()
-print "Joystick ",
-joystick = None
-if pygame.joystick.get_count():
-    print "FOUND"
-    joystick = pygame.joystick.Joystick(0)
-    joystick.init()
-else:
-    print "NOT FOUND"
-    exit(1)
+AXIS_ELEV = 0
+AXIS_AIL = 1
+AXIS_YAW = 2
 
-glLightfv(GL_LIGHT0, GL_POSITION,  (-40, 200, 100, 0.0))
-glLightfv(GL_LIGHT0, GL_AMBIENT, (0.2, 0.2, 0.2, 1.0))
-glLightfv(GL_LIGHT0, GL_DIFFUSE, (0.5, 0.5, 0.5, 1.0))
-glEnable(GL_LIGHT0)
-glEnable(GL_LIGHTING)
-glEnable(GL_COLOR_MATERIAL)
-glEnable(GL_DEPTH_TEST)
-glShadeModel(GL_SMOOTH)           # most obj files expect to be smooth-shaded
-
-# LOAD OBJECT AFTER PYGAME INIT
-obj = OBJ("cessna.obj", swapyz=True)
-
-clock = pygame.time.Clock()
-
-glMatrixMode(GL_PROJECTION)
-glLoadIdentity()
-width, height = viewport
-gluPerspective(90.0, width/float(height), 1, 100.0)
-glEnable(GL_DEPTH_TEST)
-glMatrixMode(GL_MODELVIEW)
+POS_FLYAWAY = (0,0,0)
+POS_FLYAWAY_INV = (0,180,0)
+POS_STRAIGHTUP = (90,0,0)
+POS_STRAIGHTDOWN = (-90,0,0)
+POS_KNIFEEDGE_L = (90,0,90)
+POS_KNIFEEDGE_R = (90,0,-90)
 
 
-def doFreeMotion():
-    
+def doFreeMotion():    
     glLoadIdentity()
     glTranslate(0, 0, -8) 
     glRotate(-90, 1, 0, 0) 
@@ -91,12 +58,7 @@ def doFreeMotion():
         glCallList(obj.gl_list)
         pygame.display.flip()
  
-TESTRES_OK = 1
-TESTREF_HESITATED = 2
-TESTRES_FAIL = 2       
-
 def doTest(test):
-    
     STATE_WAITING = 1
     STATE_TESTING = 2
     STATE_COMPLETED = 3
@@ -238,16 +200,6 @@ class Test(object):
 
 
 
-startPosOptions = (genStartPosFlatFlight, genStartPosReversedFlight, genStartPosStraightUp)
-rotationOptions = (genRotationAilerons, genRotationElev, genRotationRudder)
-
-print "Preparing Tests"
-tests = []
-# for i in range(25):
-#     startPos = startPosOptions[random.randrange(len(startPosOptions))]()
-#     rotation = rotationOptions[random.randrange(len(rotationOptions))]() 
-#     tests.append(Test(startPos, rotation))
-
 def genTests(startPos, startPosAngleAxis, startPosAngleSteps, rotAxises):
     res = []
     for rotAxis in rotAxises:
@@ -261,16 +213,55 @@ def genTests(startPos, startPosAngleAxis, startPosAngleSteps, rotAxises):
             res.append(Test(start, rot))
     return res
 
-AXIS_ELEV = 0
-AXIS_AIL = 1
-AXIS_YAW = 2
 
-POS_FLYAWAY = (0,0,0)
-POS_FLYAWAY_INV = (0,180,0)
-POS_STRAIGHTUP = (90,0,0)
-POS_STRAIGHTDOWN = (-90,0,0)
-POS_KNIFEEDGE_L = (90,0,90)
-POS_KNIFEEDGE_R = (90,0,-90)
+
+config = config.Config(VERSION)
+config.showDialog()
+
+pygame.init()
+viewport = (1000,800)
+hx = viewport[0]/2
+hy = viewport[1]/2
+srf = pygame.display.set_mode(viewport, OPENGL | DOUBLEBUF)
+
+pygame.joystick.init()
+print "Joystick ",
+joystick = None
+if pygame.joystick.get_count():
+    print "FOUND"
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
+else:
+    print "NOT FOUND"
+    exit(1)
+
+glLightfv(GL_LIGHT0, GL_POSITION,  (-40, 200, 100, 0.0))
+glLightfv(GL_LIGHT0, GL_AMBIENT, (0.2, 0.2, 0.2, 1.0))
+glLightfv(GL_LIGHT0, GL_DIFFUSE, (0.5, 0.5, 0.5, 1.0))
+glEnable(GL_LIGHT0)
+glEnable(GL_LIGHTING)
+glEnable(GL_COLOR_MATERIAL)
+glEnable(GL_DEPTH_TEST)
+glShadeModel(GL_SMOOTH)           # most obj files expect to be smooth-shaded
+
+# LOAD OBJECT AFTER PYGAME INIT
+obj = OBJ("cessna.obj", swapyz=True)
+
+clock = pygame.time.Clock()
+
+glMatrixMode(GL_PROJECTION)
+glLoadIdentity()
+width, height = viewport
+gluPerspective(90.0, width/float(height), 1, 100.0)
+glEnable(GL_DEPTH_TEST)
+glMatrixMode(GL_MODELVIEW)
+
+
+startPosOptions = (genStartPosFlatFlight, genStartPosReversedFlight, genStartPosStraightUp)
+rotationOptions = (genRotationAilerons, genRotationElev, genRotationRudder)
+
+print "Preparing Tests"
+tests = []
 
 rotAxises =[]
 if config.Aileron:      rotAxises.append(AXIS_AIL)
@@ -288,15 +279,10 @@ if config.KnifeEdge:
 random.shuffle(tests)
                  
 while True:
-    
     tests.sort(key=Test.getConfidence)
-    print "\nSorted tests"
-    for test in tests:
-        print " ", str(test)
-    #test = tests[random.randrange(len(tests))]
+#     print "\nSorted tests"
+#     for test in tests:
+#         print " ", str(test)
     test = tests[0]
     res = doTest(test)
-#     while True:
-#         res = doTest(test)
-#         if res == TESTRES_OK:
-#             break
+#   

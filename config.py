@@ -6,11 +6,12 @@ class ConfigFrame(wx.Frame):
     positions = ("Flat", "Inverted", "Straight Up", "Straight Down", "Knife Edge")
     rotations = ("Aileron", "Elevator", "Yaw")
     
-    def __init__(self, config):
-        super(ConfigFrame, self).__init__(parent=None, title="Configurartion", size=(250, 150))
-        self.InitUI()
+    def __init__(self, config, version):
+        super(ConfigFrame, self).__init__(parent=None, title="Configurartion")
         self.config = config
-    
+        self.version = version
+        self.InitUI()
+        
     def InitUI(self):
         self.posButtons = [wx.ToggleButton(self, wx.ID_ANY, pos) for pos in self.positions]
         self.rotButtons = [wx.ToggleButton(self, wx.ID_ANY, rot) for rot in self.rotations]
@@ -28,7 +29,7 @@ class ConfigFrame(wx.Frame):
         sizer_buttons = wx.BoxSizer(wx.HORIZONTAL)
         sizer_buttonrow2 = wx.BoxSizer(wx.VERTICAL)
         sizer_buttonRow1 = wx.BoxSizer(wx.VERTICAL)
-        label_config = wx.StaticText(self, wx.ID_ANY, ("RC Control Trainer\nConfiguration"), style=wx.ALIGN_CENTER | wx.TE_MULTILINE)
+        label_config = wx.StaticText(self, wx.ID_ANY, "RC Control Trainer v"+self.version+"\n\nConfiguration", style=wx.ALIGN_CENTER | wx.TE_MULTILINE)
         label_config.SetFont(wx.Font(14, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, ""))
         sizer_main.Add(label_config, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL, 7)
         
@@ -71,9 +72,12 @@ class ConfigFrame(wx.Frame):
 
 class Config(object):
     
+    def __init__(self, version):
+        self.version = version
+    
     def showDialog(self):
         ex = wx.App()
-        ConfigFrame(self)
+        ConfigFrame(self, self.version)
         ex.MainLoop()
         
         
